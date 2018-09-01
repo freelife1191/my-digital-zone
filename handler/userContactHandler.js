@@ -20,7 +20,7 @@ const Contact = sequelize.import('../models/contact');
 exports.uploadContact = function (req, res) {
     const contactList = req.body.contact;
 
-    Promise.all(createContactPromises(req.body.id, contactList))
+    Promise.all(createContactPromises(req.body.user_id, contactList))
         .then(function() {
             res.status(200).send();
         })
