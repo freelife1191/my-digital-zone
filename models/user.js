@@ -16,6 +16,10 @@ module.exports = (sequelize, DataType) => {
     android_logined: {
       type: DataType.BOOLEAN,
       allowNull: false
+    },
+    client_token: {
+      type: DataType.STRING,
+      allowNull: true
     }
   }, {
     timestamps: false,
