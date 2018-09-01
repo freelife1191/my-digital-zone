@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "teamsix",
+    "password": "1879asdf",
+    "database": "teamsixdb",
+    "host": "teamsixdbinstance.cazekigadpwz.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "teamsix",
+    "password": "1879asdf",
+    "database": "teamsixdb",
+    "host": "teamsixdbinstance.cazekigadpwz.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "teamsix",
+    "password": "1879asdf",
+    "database": "teamsixdb",
+    "host": "teamsixdbinstance.cazekigadpwz.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  }
+}
