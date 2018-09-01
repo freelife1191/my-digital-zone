@@ -21,10 +21,10 @@ exports.uploadContact = function (req, res) {
     const contactList = req.body.contact;
 
     Promise.all(createContactPromises(req.body.user_id, contactList))
-        .then(function() {
+        .then(function () {
             res.status(200).send();
         })
-        .catch(function() {
+        .catch(function () {
             res.status(500).send();
         })
 };
@@ -44,3 +44,20 @@ function createContactPromises(user_id, contact_list) {
 
     return promiseArray;
 }
+
+exports.getContactList = function (req, res) {
+    const query = {
+        where: {
+            user_id: req.params.user_id
+        },
+        attributes: ['id', 'name']
+    };
+
+    Contact.findAll(query)
+        .then(function (result) {
+            res.json(result);
+        })
+        .catch(function () {
+            res.status(500).send();
+        });
+};
