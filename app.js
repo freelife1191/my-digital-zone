@@ -11,7 +11,8 @@ const passport = require('passport');
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var usersRouter = require('./routes/users');
-var userContactRouter = require('./routes/userContact');
+var userContactRouter = require('./routes/userContactRouter');
+var userZoneRouter = require('./routes/userZoneRouter');
 var { sequelize } = require('./models');
 const passportConfig = require('./passport');
 
@@ -44,6 +45,7 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/contact', userContactRouter);
+app.use('/zone', userZoneRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
