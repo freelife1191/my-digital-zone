@@ -4,14 +4,20 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
+const session = require('express-session');
+const flash = require('connect-flash');
+const passport = require('passport');
 
 var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
 var usersRouter = require('./routes/users');
 var userContactRouter = require('./routes/userContact');
 var { sequelize } = require('./models');
+const passportConfig = require('./passport');
 
 var app = express();
 sequelize.sync();
+passportConfig(passport);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +35,13 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({ secret: 'test', resave: true, saveUninitialized: false })); // 세션 활성화
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/contact', userContactRouter);
 

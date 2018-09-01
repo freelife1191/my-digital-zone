@@ -33,5 +33,9 @@ Object.keys(db).forEach(modelName => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.Hashtag = require('./contact')(sequelize, Sequelize);
+db.Hashtag = require('./disconnect_contact')(sequelize, Sequelize);
+db.User = require('./user')(sequelize, Sequelize);
+db.Post = require('./zone')(sequelize, Sequelize);
 
 module.exports = db;
