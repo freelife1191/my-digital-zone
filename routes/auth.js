@@ -7,6 +7,7 @@ const { User } = require('../models');
 const router = express.Router();
 
 router.post('/login', isNotLoggedIn, (req, res, next) => {
+  console.log('req.body : ',req.body);
   passport.authenticate('local', (authError, user, info) => {
     if (authError) {
       console.error(authError);
