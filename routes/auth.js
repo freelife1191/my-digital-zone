@@ -10,19 +10,19 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => {
     if (authError) {
       console.error(authError);
-      return next(authError);
+      return res.status(400).end();
     }
     if (!user) {
       req.flash('loginError', info.message);
-      return res.redirect('/');
+      return res.status(400).end();
     }
     return req.login(user, (loginError) => {
       if (loginError) {
         console.error(loginError);
-        return next(loginError);
+        return res.status(400).end();
       }
       console.log('로그인 성공');
-      return res.redirect('/');
+      return res.status(200).end();
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
