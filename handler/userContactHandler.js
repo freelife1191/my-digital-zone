@@ -36,7 +36,7 @@ function createContactPromises(user_id, contact_list) {
     for (let i = 0; i < contactNum; i++) {
         const contactRecord = {
             user_id: user_id,
-            name: contact_list[i].name
+            name: contact_list[i]
         };
 
         promiseArray.push(Contact.create(contactRecord));
