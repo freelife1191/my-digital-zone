@@ -1,22 +1,10 @@
 'use strict';
 
 const Promise = require('bluebird');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('teamsixdb', 'teamsix', '1879asdf', {
-    host: 'teamsixdbinstance.cazekigadpwz.ap-northeast-2.rds.amazonaws.com',
-    dialect: 'mysql',
 
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-    operatorsAliases: false
-});
-
-const Zone = sequelize.import('../models/zone');
-const ZoneContact = sequelize.import('../models/disconnect_contact');
+const Zone = require('../models').models.Zone;
+const Contact = require('../models').models.Contact;
+const ZoneContact = require('../models').models.Disconnect_contact;
 
 exports.setZone = function (req, res) {
     const zone = {
@@ -63,14 +51,38 @@ exports.getZoneList = function (req, res) {
         where: {
             user_id: req.params.user_id
         },
+        include : [
+            {
+                model: ZoneContact,
+                duplicating: false,
+                include: [
+                    {
+                        model: Contact,
+                        attributes: ['id', 'name']
+                    }
+                ]
+            },
+        ],
         attributes: ['id', 'latitude', 'longitude', 'radius']
     };
 
     Zone.findAll(query)
         .then(function (result) {
-            res.json(result);
+            res.json(refileZoneQueryResult(result));
         })
-        .catch(function () {
+        .catch(function (err) {
+            console.log(err);
             res.status(500).send();
         });
 };
+
+function refileZoneQueryResult(result) {
+    return result.map(function(item) {
+        const tempItem = item.dataValues;
+        tempItem.contact = tempItem.disconnect_contacts.map(function(item) {
+            return item.contact;
+        });
+        delete tempItem.disconnect_contacts;
+        return tempItem;
+    });
+}

@@ -1,41 +1,53 @@
+/**
+ * Created by YoungKim on 2016. 8. 29..
+ */
+
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const Index = require('sequelize');
+
 const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+const sequelize = new Index('teamsixdb', 'teamsix', '1879asdf', {
+    host: 'teamsixdbinstance.cazekigadpwz.ap-northeast-2.rds.amazonaws.com',
+    dialect: 'mysql',
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-  })
-  .forEach(file => {
-    const model = sequelize['import'](path.join(__dirname, file));
-    db[model.name] = model;
-  });
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    },
+    operatorsAliases: false
+});
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+const User = sequelize.import('./user');
+const Zone = sequelize.import('./zone');
+const Contact = sequelize.import('./contact');
+const Disconnect_contact = sequelize.import('./disconnect_contact');
+
+Zone.hasMany(Disconnect_contact, {foreignKey: 'zone_id', onDelete: 'cascade'});
+Disconnect_contact.belongsTo(Zone, {foreignKey: 'zone_id', onDelete : 'cascade'});
+Contact.hasMany(Disconnect_contact, {foreignKey: 'contact_id', onDelete: 'cascade'});
+Disconnect_contact.belongsTo(Contact, {foreignKey: 'contact_id', onDelete : 'cascade'});
+
+// Order is important
+User.sync().then(function () {
+    return Zone.sync();
+}).then(function () {
+    return Contact.sync();
+}).then(function() {
+    return Disconnect_contact.sync();
+}).then(function() {
+    sequelize.sync();
 });
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-db.Hashtag = require('./contact')(sequelize, Sequelize);
-db.Hashtag = require('./disconnect_contact')(sequelize, Sequelize);
-db.User = require('./user')(sequelize, Sequelize);
-db.Post = require('./zone')(sequelize, Sequelize);
+db.models = {};
+
+db.models.User = User;
+db.models.Zone = Zone;
+db.models.Contact = Contact;
+db.models.Disconnect_contact = Disconnect_contact;
 
 module.exports = db;
