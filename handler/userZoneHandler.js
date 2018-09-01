@@ -57,3 +57,20 @@ function createContactPromises(zone_id, contact_list) {
 
     return promiseArray;
 }
+
+exports.getZoneList = function (req, res) {
+    const query = {
+        where: {
+            user_id: req.params.user_id
+        },
+        attributes: ['id', 'latitude', 'longitude', 'radius']
+    };
+
+    Zone.findAll(query)
+        .then(function (result) {
+            res.json(result);
+        })
+        .catch(function () {
+            res.status(500).send();
+        });
+};
