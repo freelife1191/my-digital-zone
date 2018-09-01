@@ -22,7 +22,8 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         return res.status(400).end();
       }
       console.log('로그인 성공');
-      return res.status(200).end();
+      console.log(user.dataValues);
+      return res.status(200).json(user.dataValues);
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
